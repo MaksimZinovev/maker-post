@@ -1,61 +1,57 @@
 # Maker Post — Design Mindmap
 
-> Living document. Updated as we explore. Each node is short; details live in the draft.
+> Living document. Updated as we explore. Each node is short; details live in the shaping doc.
 
 ## Maker Post
 
-- **Problem**: solo maker (Andrei) → rough phone photos → engaging IG posts, minimal effort
-- **Core promise**: photo → post on autopilot, with his voice, not AI slop
-- **Key tension**: dead-simple vs. not-AI-slop vs. reflects his vision
-- **Reframe (R2)**: differentiator = engagement performance, not text voice
-  - goal: content that grows followers/likes, steered by feedback + compounding stats
-  - guardrail (R2b): not generic AI slop
+- **Problem**: solo maker (Andrei) → loses "brain fuel" organizing photos across 5–7 parallel projects → wants to focus on creative work, not organization
+- **Core promise**: take a photo, everything else happens by itself — photos auto-grouped by project, post ideas surfaced, reference library compounds
+- **Key reframe (v2)**: from "AI caption generator" → "AI organizational assistant for makers." Andrei writes his own captions [Source 4, 18, 19]. The pain is organization, not content creation [Source 7, 34]
+- **Guardrail (R7)**: not AI slop; AI organizes, doesn't create; user writes own captions
 
 ## Settled so far
 
-### Round 1 — foundations
+### v1 — original shaping (superseded)
 
-- **Scope**: start personal (Andrei), design cleanly → could become a product later
-- **Platform**: iOS native (Photos share sheet = lowest friction)
-- **MVP workflow**: reviewed — photo → AI draft → user approves → post
+- Scope: start personal (Andrei), design cleanly → product later
+- Platform: iOS (Photos share sheet)
+- MVP workflow: photo → AI draft → approve → post to Instagram
+- Architecture E: Shortcut ingest + web review + Worker + two-stage AI pipeline
 
-### Round 2 — heart of the product
+### v2 — reframe from interview
 
-- **Voice**: seed style guide now + refined by feedback loop later
-- **Feedback loop**: full loop — AI suggests improvements, feedback compounds, steers future runs
-- **Instagram**: official API now, semi-manual fallback if app review denied
-  - fact: needs Creator/Business account + Meta app review; 1/day well within 50/day cap
+- **Reframe trigger**: Andrei interview revealed the core pain is organization, not caption generation [Source 7, 34, 27]
+- **New core flow**: sync photos → auto-classify by project → surface post ideas → web review app → track posted/not-posted
+- **No Instagram posting in MVP**: Andrei creates videos himself (VN editor — "pleasant work" [Source 9]). Posting is a future enhancement.
+- **PKM is in MVP**: reference library for experiment results (filament configs, print settings) [Source 15, 16]
+- **AI caption generation**: optional, off by default [Source 4, 18, 19]
+- **Auto-sync is the goal**: investigate feasibility for MVP [Source 27]. Spike created (`docs/spike-ingest.md`).
+- **Shape D selected**: pipeline constant (classify → group → web app), ingest as spike
 
-### Round 3 — content, storage, scope
+## Shape D (selected direction)
 
-- **Content**: photos first, design so Reels can be added later
-- **MVP scope**: core + bulk drafts (queue several, review later) — may simplify
-- **Architecture**: D (Hybrid) → refined into **E** (see below)
+- **D1 — Ingest mechanism** (⚠️ spike): auto-sync from iOS to Cloudflare R2. Alternatives: third-party app, iCloud Drive, Shortcuts automation. Fallback: iOS Shortcut manual share.
+- **D2 — New-photo detector**: cron Worker polls R2 for unclassified items
+- **D3 — Vision classifier**: OpenRouter free vision model describes each photo; LLM clusters into project groups
+- **D4 — Project + classification store**: D1/KV — photo → project, project metadata
+- **D5 — Post-idea detector**: threshold-based surfacing (N+ photos per project → "post idea")
+- **D6 — Web app**: project gallery (grouped media), post-idea list (to-be-posted / posted), status tracking
+- **D7 — PKM store**: experiment notes + results linked to projects
+- **D8 — Optional AI caption draft**: off by default; user can request
 
-### Round 4 — AI pipeline + reframe
+## Deferred / Future
 
-- **AI pipeline (E4)**: two-stage — vision describes photo factually → LLM writes caption using style guide + RAG over past approved posts
-- **Feedback loop (E5)**: one-tap tweaks + explicit feedback → persistent style guide; pairwise + auto-rewrite later
-- **R2 reframe**: engagement performance (not text voice); keep "not AI slop" as guardrail
-- **Reels/video (E6)**: later, pipeline designed to slot in (e.g. hyperframes)
-- **Stats self-learning (E7/R15)**: later, once enough post history — analyze engagement → steer future
-
-## Architecture E (selected direction)
-
-- **E1 — MVP ingest via iOS Shortcut** (no native app) + hosted web review app
-  - share photo → Shortcut POSTs to Worker → AI runs → opens web page → approve → publish
-  - why: avoids building a native iOS app for MVP; Worker + web backend carry over to a real app later
-- **E2 — Auto-sync later, modified**: only photos Andrei tags (special album/folder) feed the pipeline
-  - avoids AI slop by not auto-processing every photo
-- **E3 — Guided setup/onboarding**: one-time setup made easy, automated where possible
-  - tradeoff accepted: setup once, then near-zero-effort capture daily (pays off)
-- **E4 — AI pipeline**: two-stage (vision describe → LLM write) + RAG over approved posts
-  - provider: OpenRouter free primary (vision `llama-3.2-11b-vision:free`, text `llama-3.3-70b:free`), Ollama Cloud fallback (glm-5.1)
-- **E5 — Feedback loop**: one-tap tweaks + explicit feedback → style guide; pairwise + auto-rewrite later
-- **E6 — Reels/video later**: pipeline designed so video assembly slots in without rework
-- **E7 — Stats self-learning later**: IG insights → correlate features with engagement → steer future
+- Instagram auto-posting (Andrei creates videos himself for MVP)
+- iOS Photo album per project (investigate — might defer)
+- Content gap detection — AI suggests missing photos [Source 47]
+- Trend analysis + content suggestions (audience-aware: engineers/companies [Source 23])
+- Feedback on LLM classification — steer/tweak grouping
+- Video draft generation on autopilot — select from alternatives, approve, post
+- Stats-based self-learning — analyze engagement → steer future content
 
 ## Status
 
-- **Design fully shaped** — requirements, shape E, fit check, breadboard, UX, AI pipeline all recorded
-- **Next step**: slice into implementation (V1 plan) — ask user
+- **Frame created** (`docs/frame.md`) — problem, outcome, less/more about
+- **Shaping v2 complete** (`docs/shaping.md`) — R0–R8, shapes A–D, fit check, Shape D selected
+- **Ingest spike created** (`docs/spike-ingest.md`) — investigate auto-sync feasibility
+- **Next step**: Confirm Shape D with user → breadboard D → slice into implementation

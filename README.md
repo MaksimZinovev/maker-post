@@ -1,69 +1,58 @@
 # Maker Post
 
-> Photo → engaging Instagram post, on autopilot, in your voice — not AI slop.
+> AI organizational assistant for solo makers — take a photo, everything else happens by itself.
 
-Maker Post turns rough phone photos into social media posts that build community and followership for solo makers. Designed for Andrei, a part-time 3D-printing entrepreneur who wants minimal friction: take a photo, get a post.
+Auto-classifies photos by project, surfaces post ideas when enough content accumulates, and stores experiment results as a reference library. Designed for Andrei, a part-time 3D-printing entrepreneur juggling 5–7 projects in parallel who loses "brain fuel" to organization, not creation.
 
-## Why
+## Principles
 
-Solo builders don't have a marketing team. They have limited time and don't want complex setups, multi-step flows, or generic AI-generated slop. They want their voice, their vision, minimal effort — and content that actually performs.
+- **Dead-simple** — zero manual effort beyond taking photos
+- **AI organizes, doesn't create** — user writes own captions; AI classifies, groups, surfaces ideas
+- **Compounding knowledge** — reference library stores experiment results for future projects
+- **Lean & visual** — everything you need, nothing you don't
+- **Not AI slop** — quality floor; reflects the user's voice
 
-## Core principles
-
-- **Dead-simple** — grandma could install and use it
-- **AI-powered** — generates captions + suggests improvements from your feedback
-- **Compounding feedback** — your steering shapes every future post; human feedback compounds
-- **Lean & visual** — everything you need, nothing you don't; visual over textual
-- **Not AI slop** — quality floor; reflects your voice and vision
-
-## Architecture (selected: E — Hybrid + Shortcut MVP)
+## Architecture (selected: D — pipeline constant, ingest as spike)
 
 | Part | Mechanism |
 |------|-----------|
-| **E1** | MVP ingest via iOS Shortcut (no native app) + hosted web review app |
-| **E2** | Later: auto-sync only tagged/favorite photos (avoids AI slop) |
-| **E3** | Guided one-time setup/onboarding |
-| **E4** | Two-stage AI pipeline: vision describes → LLM writes caption (style guide + RAG over approved posts). OpenRouter free models primary, Ollama Cloud fallback |
-| **E5** | Feedback loop: one-tap tweaks + explicit feedback → persistent style guide |
-| **E6** | Reels/video slot in later |
-| **E7** | Stats-based self-learning later (IG insights → steer future content) |
+| **D1** | Ingest — auto-sync from iOS to Cloudflare R2 (⚠️ spike; fallback: iOS Shortcut) |
+| **D2** | Cron Worker polls R2 for new unclassified photos |
+| **D3** | Vision model classifies each photo → LLM clusters into project groups |
+| **D4** | Project + classification store (D1/KV) |
+| **D5** | Post-idea detector — surfaces ideas when threshold reached |
+| **D6** | Web app — project gallery, post-idea list, status tracking |
+| **D7** | PKM store — experiment notes linked to projects |
+| **D8** | Optional AI caption draft (off by default) |
 
-## Repository layout
-
-```
-maker-post/
-├── README.md           # this file
-├── docs/               # design documents (shaping work)
-│   ├── idea.md                 # original app idea
-│   ├── architecture-options.md # A/B/C/D architecture comparison
-│   ├── mindmap.md              # living design mindmap
-│   ├── shaping.md              # requirements, shapes, fit check, UX
-│   └── slices.md               # vertical implementation slices (V1–V6)
-├── src/                # Cloudflare Worker (API + AI pipeline)
-└── web/                # hosted web review app
-```
-
-## Implementation slices
-
-| # | Slice | Demo |
-|---|-------|------|
-| V1 | Photo → AI draft | Share a photo → see an AI caption draft on the web page |
-| V2 | Approve & Post | Approve a draft → it posts to Instagram |
-| V3 | Edit + Regenerate | Edit the caption, or regenerate a new draft |
-| V4 | Feedback loop | Tap "shorter" → the next draft is shorter |
-| V5 | Bulk drafts | Queue several photos, review from a drafts list |
-| V6 | Seed style + onboarding | Answer 2 questions → future drafts match your style |
-
-See [`docs/slices.md`](docs/slices.md) for the full breadboard.
-
-## Status
-
-Design fully shaped. Next step: slice V1 into implementation.
+**Not in MVP:** Instagram posting, iOS Photo album management, content gap detection, trend analysis, video draft generation. See [shaping doc](docs/shaping.md#deferred--future) for full deferred list.
 
 ## Tech stack (planned)
 
-- **Cloudflare Workers** — serverless API + AI pipeline
-- **OpenRouter** — free vision + text models (primary), Ollama Cloud (fallback)
-- **Instagram Graph API** — publishing (official API + semi-manual fallback)
-- **iOS Shortcuts** — zero-app MVP ingest
-- **Web app** — review/approve/publish UI
+- **Cloudflare Workers + R2 + D1/KV** — serverless API, object storage, metadata
+- **OpenRouter** — free vision + text models (primary)
+- **Web app** — project gallery, post-idea review, PKM reference
+
+## Docs
+
+```
+maker-post/
+├── README.md                       # this file
+├── AGENTS.md                       # agent working rules
+├── docs/
+│   ├── frame.md                    # problem frame (why)
+│   ├── shaping.md                  # requirements, shapes, fit check (v2)
+│   ├── spike-ingest.md             # D1: auto-sync feasibility spike
+│   ├── mindmap.md                  # living design mindmap
+│   ├── progress.md                 # session progress log
+│   ├── idea.md                     # original app idea
+│   ├── maker-post-app-andrei-interview.md  # user interview
+│   ├── architecture-options.md    # v1 architecture comparison (historical)
+│   └── slices.md                   # v1 slices (to be re-sliced)
+├── src/                            # Cloudflare Worker (placeholder)
+└── web/                            # web review app (placeholder)
+```
+
+## Status
+
+Shaping v2 complete. Next: breadboard Shape D → re-slice → implement.

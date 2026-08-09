@@ -15,3 +15,7 @@ dist/
 *.log
 .idea/
 .vscode/
+
+# Local 
+.pi
+.ck/
