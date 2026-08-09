@@ -1,0 +1,1214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maker Post — From photo to post, in your voice</title>
+<style>
+/* ============================================================
+   MAKER POST — Design Overview & Interactive Prototype
+   Aesthetic: maker workshop — warm, tactile, craft-oriented
+   Skills: design-artifact, html-diagram, html-prototype
+   ============================================================ */
+
+/* --- Design tokens --- */
+:root {
+  color-scheme: light;
+  /* Workbench surface */
+  --bg:          #F2EDE3;
+  --bg-elev:    #FBF8F1;
+  --bg-sunken:  #E8E1D3;
+  /* ABS charcoal text */
+  --ink:        #2B2724;
+  --ink-muted:  #6B6259;
+  --ink-soft:   #8A8175;
+  /* Layer lines */
+  --line:       #D4C9B8;
+  --line-soft:  #E0D7C7;
+  /* Hotend orange */
+  --accent:     #D96B2E;
+  --accent-hi:  #E87A3B;
+  --accent-soft:#F4DAC8;
+  /* Resin amber */
+  --amber:      #C89968;
+  --amber-soft: #E8D9C5;
+  /* Print success green */
+  --green:      #5B8C5A;
+  --green-soft: #D4E5D0;
+  /* Code/workshop floor */
+  --code-bg:    #E0D9CC;
+  /* Shadows */
+  --shadow:     rgba(43,39,36,0.10);
+  --shadow-lg:  rgba(43,39,36,0.18);
+  --focus:      #D96B2E;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg:         #1C1916;
+    --bg-elev:    #28241F;
+    --bg-sunken:  #131110;
+    --ink:        #EDE7DC;
+    --ink-muted:  #9A9088;
+    --ink-soft:   #756C62;
+    --line:       #3D3833;
+    --line-soft:  #2E2925;
+    --accent:     #E8915A;
+    --accent-hi:  #F0A06A;
+    --accent-soft:#3D2E22;
+    --amber:      #B8916A;
+    --amber-soft: #2E2519;
+    --green:      #7AB87A;
+    --green-soft: #1E2E1E;
+    --code-bg:    #131110;
+    --shadow:     rgba(0,0,0,0.35);
+    --shadow-lg:  rgba(0,0,0,0.50);
+    --focus:      #E8915A;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg:         #1C1916;
+  --bg-elev:    #28241F;
+  --bg-sunken:  #131110;
+  --ink:        #EDE7DC;
+  --ink-muted:  #9A9088;
+  --ink-soft:   #756C62;
+  --line:       #3D3833;
+  --line-soft:  #2E2925;
+  --accent:     #E8915A;
+  --accent-hi:  #F0A06A;
+  --accent-soft:#3D2E22;
+  --amber:      #B8916A;
+  --amber-soft: #2E2519;
+  --green:      #7AB87A;
+  --green-soft: #1E2E1E;
+  --code-bg:    #131110;
+  --shadow:     rgba(0,0,0,0.35);
+  --shadow-lg:  rgba(0,0,0,0.50);
+  --focus:      #E8915A;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg:          #F2EDE3;
+  --bg-elev:    #FBF8F1;
+  --bg-sunken:  #E8E1D3;
+  --ink:        #2B2724;
+  --ink-muted:  #6B6259;
+  --ink-soft:   #8A8175;
+  --line:       #D4C9B8;
+  --line-soft:  #E0D7C7;
+  --accent:     #D96B2E;
+  --accent-hi:  #E87A3B;
+  --accent-soft:#F4DAC8;
+  --amber:      #C89968;
+  --amber-soft: #E8D9C5;
+  --green:      #5B8C5A;
+  --green-soft: #D4E5D0;
+  --code-bg:    #E0D9CC;
+  --shadow:     rgba(43,39,36,0.10);
+  --shadow-lg:  rgba(43,39,36,0.18);
+  --focus:      #D96B2E;
+}
+
+/* --- Reset --- */
+*,*::before,*::after{box-sizing:border-box}
+html{min-width:320px;background:var(--bg);scroll-behavior:smooth}
+body{
+  margin:0;
+  background:
+    repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(43,39,36,0.012) 3px,rgba(43,39,36,0.012) 4px),
+    var(--bg);
+  color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:Georgia,'Iowan Old Style','Palatino Linotype',serif;font-weight:700;line-height:1.2;margin:0}
+h1{font-size:clamp(2rem,6vw,3.2rem);letter-spacing:-0.02em}
+h2{font-size:clamp(1.5rem,4vw,2.1rem);letter-spacing:-0.01em}
+h3{font-size:clamp(1.15rem,3vw,1.4rem)}
+p{margin:0 0 .6em 0}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,[tabindex]:focus-visible{
+  outline:3px solid var(--focus);outline-offset:2px;
+}
+[hidden]{display:none!important}
+.mono{font-family:'SF Mono','JetBrains Mono','Fira Code',ui-monospace,monospace;font-size:.85em;letter-spacing:-0.01em}
+.eyebrow{font-family:'SF Mono','JetBrains Mono',ui-monospace,monospace;font-size:.7rem;text-transform:uppercase;letter-spacing:.18em;color:var(--ink-soft);font-weight:600}
+
+/* --- Layout --- */
+.wrap{max-width:880px;margin:0 auto;padding:0 20px}
+section{padding:48px 0;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:none}
+
+/* --- Top bar --- */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:var(--bg-elev);
+  border-bottom:1px solid var(--line);
+  padding:10px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;
+}
+.topbar .brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.95rem;white-space:nowrap}
+.topbar .brand svg{width:22px;height:22px;flex-shrink:0}
+.topbar nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.topbar nav::-webkit-scrollbar{display:none}
+.topbar nav a{
+  font-size:.78rem;color:var(--ink-muted);padding:6px 10px;border-radius:6px;
+  white-space:nowrap;text-decoration:none;transition:background .15s,color .15s;
+}
+.topbar nav a:hover{background:var(--bg-sunken);color:var(--ink);text-decoration:none}
+.theme-toggle{
+  flex-shrink:0;background:var(--bg-sunken);border:1px solid var(--line);
+  border-radius:8px;padding:6px 10px;font-size:.75rem;color:var(--ink-muted);
+  cursor:pointer;transition:background .15s;
+}
+.theme-toggle:hover{background:var(--line-soft)}
+
+/* --- Hero --- */
+.hero{padding:64px 0 40px;text-align:center}
+.hero .eyebrow{margin-bottom:12px}
+.hero h1{margin-bottom:16px}
+.hero h1 .accent{color:var(--accent);font-style:italic}
+.hero .tagline{font-size:clamp(1rem,3vw,1.2rem);color:var(--ink-muted);max-width:560px;margin:0 auto 24px;line-height:1.5}
+.hero .meta{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.hero .meta span{
+  font-family:'SF Mono',ui-monospace,monospace;font-size:.72rem;
+  padding:4px 10px;border-radius:20px;border:1px solid var(--line);
+  color:var(--ink-muted);background:var(--bg-elev);
+}
+
+/* --- Problem section --- */
+.problem-grid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:640px){.problem-grid{grid-template-columns:1fr 1fr}}
+.problem-card{
+  background:var(--bg-elev);border:1px solid var(--line);border-radius:12px;
+  padding:20px;box-shadow:0 1px 3px var(--shadow);
+}
+.problem-card .icon{font-size:1.6rem;margin-bottom:8px}
+.problem-card h3{margin-bottom:6px}
+.problem-card p{color:var(--ink-muted);font-size:.9rem;margin:0}
+
+/* --- Principles --- */
+.principles{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:640px){.principles{grid-template-columns:repeat(3,1fr)}}
+.principle{
+  background:var(--bg-elev);border:1px solid var(--line);border-radius:10px;
+  padding:16px;text-align:center;
+}
+.principle .num{
+  font-family:Georgia,serif;font-size:1.8rem;color:var(--accent);
+  font-weight:700;font-style:italic;display:block;margin-bottom:4px;
+}
+.principle h4{font-size:.85rem;margin-bottom:4px}
+.principle p{font-size:.78rem;color:var(--ink-muted);margin:0;line-height:1.4}
+
+/* --- Architecture diagram --- */
+.arch-diagram{position:relative;margin:24px 0}
+.arch-flow{display:flex;flex-direction:column;gap:0;align-items:stretch}
+@media(min-width:680px){.arch-flow{flex-direction:row;align-items:stretch;gap:0}}
+.arch-node{
+  background:var(--bg-elev);border:2px solid var(--line);border-radius:12px;
+  padding:14px 16px;text-align:center;flex:1;min-width:0;
+  position:relative;z-index:2;
+  transition:border-color .2s,box-shadow .2s;
+}
+.arch-node:hover{border-color:var(--accent);box-shadow:0 2px 8px var(--shadow)}
+.arch-node .node-icon{font-size:1.4rem;margin-bottom:4px}
+.arch-node .node-label{font-weight:700;font-size:.82rem;margin-bottom:2px}
+.arch-node .node-sub{font-size:.7rem;color:var(--ink-muted);line-height:1.3}
+.arch-node.accent{border-color:var(--accent);background:var(--accent-soft)}
+.arch-node.accent .node-label{color:var(--accent)}
+.arch-arrow{
+  display:flex;align-items:center;justify-content:center;
+  color:var(--ink-soft);font-size:1.2rem;
+  padding:6px 0;
+}
+@media(min-width:680px){.arch-arrow{padding:0;flex:0 0 28px}}
+.arch-arrow svg{width:24px;height:24px}
+.arch-side{
+  margin-top:20px;display:grid;grid-template-columns:1fr;gap:12px;
+}
+@media(min-width:560px){.arch-side{grid-template-columns:1fr 1fr}}
+.arch-store{
+  background:var(--bg-sunken);border:1px dashed var(--line);border-radius:10px;
+  padding:12px 16px;font-size:.8rem;color:var(--ink-muted);
+  display:flex;align-items:center;gap:10px;
+}
+.arch-store .store-icon{font-size:1.1rem;flex-shrink:0}
+.arch-store strong{color:var(--ink);font-size:.82rem}
+.arch-store .mono{font-size:.72rem}
+
+/* --- E2E Flow timeline --- */
+.flow-timeline{position:relative;padding-left:0;margin:24px 0}
+.flow-step{
+  display:flex;gap:16px;align-items:flex-start;
+  padding:12px 0;position:relative;
+}
+.flow-step:not(:last-child)::after{
+  content:'';position:absolute;left:19px;top:48px;bottom:-12px;
+  width:2px;background:var(--line);
+}
+.flow-step .step-num{
+  flex-shrink:0;width:40px;height:40px;border-radius:50%;
+  background:var(--bg-elev);border:2px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-family:Georgia,serif;font-weight:700;font-size:1rem;color:var(--accent);
+  position:relative;z-index:2;
+}
+.flow-step.done .step-num{background:var(--green);border-color:var(--green);color:#fff}
+.flow-step .step-body{flex:1;padding-top:6px}
+.flow-step .step-body h4{font-size:.92rem;margin-bottom:2px}
+.flow-step .step-body p{font-size:.82rem;color:var(--ink-muted);margin:0;line-height:1.45}
+.flow-step .step-body .actor{
+  font-family:'SF Mono',ui-monospace,monospace;font-size:.68rem;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft);
+  margin-bottom:3px;
+}
+
+/* --- Feedback loop --- */
+.feedback-loop{
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  margin:24px 0;position:relative;
+}
+.fb-node{
+  background:var(--bg-elev);border:2px solid var(--line);border-radius:12px;
+  padding:14px 20px;text-align:center;max-width:320px;width:100%;
+  position:relative;z-index:2;transition:border-color .2s;
+}
+.fb-node:hover{border-color:var(--accent)}
+.fb-node .fb-icon{font-size:1.3rem;margin-bottom:4px}
+.fb-node .fb-label{font-weight:700;font-size:.85rem;margin-bottom:2px}
+.fb-node .fb-sub{font-size:.72rem;color:var(--ink-muted);line-height:1.35}
+.fb-node.highlight{border-color:var(--accent);background:var(--accent-soft)}
+.fb-arrow{
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent);font-size:1.5rem;padding:8px 0;
+}
+.fb-arrow svg{width:28px;height:28px}
+.fb-return{
+  margin-top:12px;padding:10px 16px;
+  background:var(--bg-sunken);border:1px dashed var(--accent);
+  border-radius:20px;font-size:.78rem;color:var(--accent);
+  text-align:center;font-weight:600;
+}
+
+/* --- Phone prototype --- */
+.proto-section{background:var(--bg-sunken);padding:48px 0}
+.proto-section .wrap{max-width:480px}
+.phone-frame{
+  width:100%;max-width:340px;margin:24px auto 0;
+  background:var(--ink);border-radius:36px;padding:10px;
+  box-shadow:0 8px 30px var(--shadow-lg);
+  position:relative;
+}
+.phone-screen{
+  background:var(--bg-elev);border-radius:28px;overflow:hidden;
+  min-height:560px;display:flex;flex-direction:column;
+  position:relative;
+}
+.phone-notch{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:120px;height:24px;background:var(--ink);border-radius:0 0 14px 14px;
+  z-index:10;
+}
+.phone-status{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 20px 4px;font-size:.7rem;color:var(--ink-muted);
+  font-family:-apple-system,system-ui,sans-serif;font-weight:600;
+}
+.phone-status .status-icons{display:flex;gap:4px;align-items:center}
+.phone-content{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* Screen container — shows one screen at a time */
+.screen{display:none;flex:1;flex-direction:column;overflow-y:auto}
+.screen.active{display:flex}
+
+/* --- Review screen --- */
+.review-photo{
+  width:100%;aspect-ratio:1;object-fit:cover;
+  background:var(--bg-sunken);display:flex;align-items:center;justify-content:center;
+  border-bottom:1px solid var(--line);
+}
+.review-photo svg{width:60%;height:60%}
+.review-body{padding:16px;flex:1;display:flex;flex-direction:column;gap:12px}
+.review-meta{display:flex;justify-content:space-between;align-items:center}
+.review-meta .tag{
+  font-family:'SF Mono',ui-monospace,monospace;font-size:.65rem;
+  padding:3px 8px;border-radius:12px;background:var(--amber-soft);
+  color:var(--amber);font-weight:600;
+}
+.review-meta .time{font-size:.7rem;color:var(--ink-soft)}
+.review-caption{
+  font-size:.88rem;line-height:1.5;color:var(--ink);
+  padding:12px;background:var(--bg-sunken);border-radius:10px;
+  border:1px solid var(--line-soft);
+  transition:opacity .2s;
+}
+.review-caption.regenerating{opacity:.4}
+.review-caption .hashtag{color:var(--accent);font-weight:600}
+.review-tweaks{
+  display:flex;flex-wrap:wrap;gap:6px;
+}
+.tweak-btn{
+  font-size:.74rem;padding:6px 12px;border-radius:20px;
+  background:var(--bg-elev);border:1px solid var(--line);
+  color:var(--ink-muted);cursor:pointer;transition:all .15s;
+  white-space:nowrap;
+}
+.tweak-btn:hover{border-color:var(--accent);color:var(--accent)}
+.tweak-btn:active{transform:scale(.95)}
+.tweak-btn.applied{
+  background:var(--accent-soft);border-color:var(--accent);
+  color:var(--accent);font-weight:600;
+}
+.review-actions{display:flex;flex-direction:column;gap:8px;padding:16px;border-top:1px solid var(--line)}
+.btn-primary{
+  background:var(--accent);color:#fff;border:none;
+  padding:12px;border-radius:12px;font-weight:700;font-size:.9rem;
+  cursor:pointer;transition:background .15s,transform .1s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.btn-primary:hover{background:var(--accent-hi)}
+.btn-primary:active{transform:scale(.98)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-secondary{
+  background:transparent;color:var(--ink-muted);border:1px solid var(--line);
+  padding:10px;border-radius:12px;font-size:.82rem;
+  cursor:pointer;transition:all .15s;
+}
+.btn-secondary:hover{border-color:var(--ink-muted);color:var(--ink)}
+.btn-row{display:flex;gap:8px}
+.btn-row .btn-secondary{flex:1}
+
+/* --- Success screen --- */
+.screen-success{align-items:center;justify-content:center;text-align:center;padding:40px 24px}
+.screen-success .check-circle{
+  width:64px;height:64px;border-radius:50%;background:var(--green);
+  display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+}
+.screen-success .check-circle svg{width:32px;height:32px;color:#fff}
+.screen-success h3{margin-bottom:8px}
+.screen-success p{color:var(--ink-muted);font-size:.85rem;max-width:240px;margin:0 auto 20px}
+.screen-success .ig-link{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--bg-sunken);border:1px solid var(--line);
+  padding:8px 16px;border-radius:10px;font-size:.8rem;color:var(--ink);
+  text-decoration:none;margin-bottom:16px;
+}
+.screen-success .ig-link:hover{border-color:var(--accent)}
+
+/* --- Drafts screen --- */
+.drafts-header{padding:16px;border-bottom:1px solid var(--line)}
+.drafts-header h3{font-size:1rem;margin-bottom:2px}
+.drafts-header .count{font-size:.75rem;color:var(--ink-soft)}
+.drafts-list{flex:1;overflow-y:auto}
+.draft-row{
+  display:flex;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line-soft);
+  cursor:pointer;transition:background .15s;align-items:center;
+}
+.draft-row:hover{background:var(--bg-sunken)}
+.draft-thumb{
+  width:56px;height:56px;border-radius:8px;flex-shrink:0;
+  background:var(--bg-sunken);border:1px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+}
+.draft-thumb svg{width:70%;height:70%}
+.draft-info{flex:1;min-width:0}
+.draft-info .preview{font-size:.78rem;color:var(--ink);line-height:1.4;margin-bottom:2px;
+  overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.draft-info .draft-time{font-size:.68rem;color:var(--ink-soft)}
+.draft-badge{
+  font-size:.62rem;padding:2px 6px;border-radius:8px;
+  background:var(--amber-soft);color:var(--amber);font-weight:600;flex-shrink:0;
+}
+
+/* --- Onboarding screen --- */
+.screen-onboard{padding:24px 20px;gap:16px}
+.onboard-step-indicator{
+  display:flex;gap:6px;justify-content:center;
+}
+.onboard-step-indicator .dot{
+  width:8px;height:8px;border-radius:50%;background:var(--line);
+}
+.onboard-step-indicator .dot.active{background:var(--accent)}
+.onboard-step-indicator .dot.done{background:var(--green)}
+.onboard-content{flex:1;display:flex;flex-direction:column;gap:14px}
+.onboard-content h3{font-size:1.1rem;text-align:center}
+.onboard-content p{text-align:center;color:var(--ink-muted);font-size:.85rem}
+.onboard-illust{
+  width:80px;height:80px;margin:0 auto;border-radius:20px;
+  background:var(--accent-soft);display:flex;align-items:center;justify-content:center;
+  font-size:2rem;
+}
+.onboard-options{display:flex;flex-direction:column;gap:8px}
+.onboard-option{
+  padding:12px 16px;border:1px solid var(--line);border-radius:10px;
+  background:var(--bg-elev);cursor:pointer;transition:all .15s;
+  font-size:.82rem;text-align:left;display:flex;align-items:center;gap:10px;
+}
+.onboard-option:hover{border-color:var(--accent)}
+.onboard-option.selected{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
+.onboard-option .opt-radio{
+  width:18px;height:18px;border-radius:50%;border:2px solid var(--line);
+  flex-shrink:0;transition:border-color .15s;
+}
+.onboard-option.selected .opt-radio{border-color:var(--accent);background:var(--accent)}
+.onboard-actions{display:flex;gap:8px}
+
+/* --- Phone tab bar --- */
+.phone-tabbar{
+  display:flex;border-top:1px solid var(--line);background:var(--bg-elev);
+}
+.phone-tab{
+  flex:1;padding:10px 0;text-align:center;font-size:.68rem;
+  color:var(--ink-soft);cursor:pointer;transition:color .15s;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+}
+.phone-tab .tab-icon{font-size:1.1rem}
+.phone-tab:hover{color:var(--ink-muted)}
+.phone-tab.active{color:var(--accent);font-weight:600}
+
+/* --- Proto controls --- */
+.proto-controls{
+  display:flex;gap:8px;justify-content:center;flex-wrap:wrap;
+  margin-top:20px;
+}
+.proto-ctrl{
+  font-size:.75rem;padding:6px 14px;border-radius:8px;
+  background:var(--bg-elev);border:1px solid var(--line);
+  color:var(--ink-muted);cursor:pointer;transition:all .15s;
+}
+.proto-ctrl:hover{border-color:var(--accent);color:var(--accent)}
+.proto-ctrl.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* --- Footer --- */
+footer{padding:32px 0;text-align:center}
+footer p{font-size:.78rem;color:var(--ink-soft);margin:0}
+footer .mono{font-size:.72rem}
+
+/* --- Reduced motion --- */
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ TOP BAR ============ -->
+<div class="topbar">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)">
+      <rect x="3" y="3" width="18" height="18" rx="2"/>
+      <path d="M3 9h18"/>
+      <path d="M9 21V9"/>
+    </svg>
+    Maker Post
+  </div>
+  <nav>
+    <a href="#concepts">Concept</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#flow">Flow</a>
+    <a href="#feedback">Feedback</a>
+    <a href="#prototype">Try it</a>
+  </nav>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">☾</button>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="concepts">
+  <div class="wrap">
+    <p class="eyebrow">For solo makers · iOS → Instagram</p>
+    <h1>From photo to <span class="accent">post</span>,<br>in your voice.</h1>
+    <p class="tagline">
+      Maker Post turns the rough photos on your phone into engaging Instagram posts —
+      on autopilot, with your style, not generic AI slop.
+    </p>
+    <div class="meta">
+      <span>📷 Photo in</span>
+      <span>✍️ AI draft</span>
+      <span>👍 Approve</span>
+      <span>📱 Posted</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE PROBLEM ============ -->
+<section id="problem">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:8px">The problem</p>
+    <h2 style="margin-bottom:20px">Andrei's situation</h2>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="icon">⏰</div>
+        <h3>Limited time</h3>
+        <p>Works full-time. His 3D printing side-project gets whatever hours are left. Every minute spent on marketing is a minute not printing.</p>
+      </div>
+      <div class="problem-card">
+        <div class="icon">📱</div>
+        <h3>Photos pile up</h3>
+        <p>Dozens of photos of his prints sit on his phone. They could be building his community — but turning them into posts takes too many steps.</p>
+      </div>
+      <div class="problem-card">
+        <div class="icon">🔄</div>
+        <h3>Too much friction</h3>
+        <p>Existing tools are heavyweight: multiple apps, complex setups, steep learning curves. He wants to take a photo and have a post ready. That's it.</p>
+      </div>
+      <div class="problem-card">
+        <div class="icon">🤖</div>
+        <h3>Not AI slop</h3>
+        <p>Generic AI-generated text is recognizable and low-value. Andrei wants posts that reflect his voice, his passion — content that feels like him.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CORE PRINCIPLES ============ -->
+<section id="principles">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:8px">What matters</p>
+    <h2 style="margin-bottom:20px">Core principles</h2>
+    <div class="principles">
+      <div class="principle">
+        <span class="num">01</span>
+        <h4>Dead-simple</h4>
+        <p>Grandma could install and use it. Lowest possible friction.</p>
+      </div>
+      <div class="principle">
+        <span class="num">02</span>
+        <h4>AI-powered</h4>
+        <p>Generates captions. Suggests improvements. Learns your style.</p>
+      </div>
+      <div class="principle">
+        <span class="num">03</span>
+        <h4>Compounding feedback</h4>
+        <p>Your steering shapes every future post. Feedback compounds over time.</p>
+      </div>
+      <div class="principle">
+        <span class="num">04</span>
+        <h4>Lean & visual</h4>
+        <p>Everything you need, nothing you don't. Visual over textual.</p>
+      </div>
+      <div class="principle">
+        <span class="num">05</span>
+        <h4>Not AI slop</h4>
+        <p>Quality floor. Reflects your voice, your vision, your passion.</p>
+      </div>
+      <div class="principle">
+        <span class="num">06</span>
+        <h4>Performs</h4>
+        <p>Content that grows followers and likes, steered by your feedback.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ARCHITECTURE DIAGRAM ============ -->
+<section id="architecture">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:8px">How it works · Architecture E</p>
+    <h2 style="margin-bottom:8px">The system</h2>
+    <p style="color:var(--ink-muted);margin-bottom:8px;font-size:.9rem">
+      Five pieces, working together. No native app needed for MVP — an iOS Shortcut
+      feeds a Cloudflare Worker, which runs the AI and serves a web review page.
+    </p>
+
+    <div class="arch-diagram">
+      <div class="arch-flow">
+        <div class="arch-node">
+          <div class="node-icon">📸</div>
+          <div class="node-label">Photos app</div>
+          <div class="node-sub">Take photo → Share</div>
+        </div>
+        <div class="arch-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <div class="arch-node">
+          <div class="node-icon">📎</div>
+          <div class="node-label">iOS Shortcut</div>
+          <div class="node-sub">"Maker Post" action<br>POSTs photo to Worker</div>
+        </div>
+        <div class="arch-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <div class="arch-node accent">
+          <div class="node-icon">⚡</div>
+          <div class="node-label">Cloudflare Worker</div>
+          <div class="node-sub">AI pipeline + API<br>Serves review page</div>
+        </div>
+        <div class="arch-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <div class="arch-node">
+          <div class="node-icon">🌐</div>
+          <div class="node-label">Web review</div>
+          <div class="node-sub">Approve · tweak · post<br>Opens in browser</div>
+        </div>
+        <div class="arch-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </div>
+        <div class="arch-node">
+          <div class="node-icon">📷</div>
+          <div class="node-label">Instagram</div>
+          <div class="node-sub">Auto-published via<br>Graph API</div>
+        </div>
+      </div>
+
+      <div class="arch-side">
+        <div class="arch-store">
+          <span class="store-icon">🧠</span>
+          <div>
+            <strong>AI Pipeline (2-stage)</strong><br>
+            <span class="mono">Stage 1: Vision model describes photo → Stage 2: LLM writes caption using style guide + RAG over approved posts</span>
+          </div>
+        </div>
+        <div class="arch-store">
+          <span class="store-icon">💾</span>
+          <div>
+            <strong>Style Guide &amp; Memory</strong><br>
+            <span class="mono">Persistent style rules shaped by your feedback. Approved posts become RAG source for future drafts.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ E2E FLOW ============ -->
+<section id="flow">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:8px">Step by step</p>
+    <h2 style="margin-bottom:8px">From photo to post</h2>
+    <p style="color:var(--ink-muted);margin-bottom:8px;font-size:.9rem">
+      The happy path — Andrei's daily flow. Under 30 seconds of his time.
+    </p>
+
+    <div class="flow-timeline">
+      <div class="flow-step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="actor">Andrei · iPhone</div>
+          <h4>Take a photo</h4>
+          <p>Opens the native camera app and snaps a photo of his latest 3D print. Nothing special — just a rough photo.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="actor">Andrei · Photos app</div>
+          <h4>Select &amp; share</h4>
+          <p>Opens Photos, selects the photo, taps the Share button. Standard iOS flow — no new app to learn.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="actor">Andrei · Share sheet</div>
+          <h4>Tap "Maker Post"</h4>
+          <p>Taps the Maker Post action in the share sheet. The iOS Shortcut uploads the photo to the Worker and opens the review page.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="actor">Worker · AI pipeline</div>
+          <h4>AI generates a draft</h4>
+          <p>Stage 1: a vision model describes the photo factually. Stage 2: an LLM writes a caption in Andrei's voice, using his style guide and past approved posts as reference. Takes ~3–5 seconds.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="actor">Andrei · Web review</div>
+          <h4>Review the draft</h4>
+          <p>Sees a single card: photo on top, AI-generated caption below. Reads it. This is where he spends his 10 seconds.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="actor">Andrei · One-tap tweaks</div>
+          <h4>Tweak (optional)</h4>
+          <p>If the caption isn't quite right, taps a one-tap tweak: "shorter", "more casual", "add hashtags". Each tap updates his style guide for next time. Or skips this step entirely.</p>
+        </div>
+      </div>
+      <div class="flow-step done">
+        <div class="step-num">✓</div>
+        <div class="step-body">
+          <div class="actor">Andrei · Web review</div>
+          <h4>Approve &amp; Post</h4>
+          <p>Taps "Approve &amp; Post". The Worker publishes to Instagram via the Graph API. Done. The approved post joins the RAG library for future drafts.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEEDBACK LOOP ============ -->
+<section id="feedback">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:8px">Compounding feedback</p>
+    <h2 style="margin-bottom:8px">The more you use it, the better it gets</h2>
+    <p style="color:var(--ink-muted);margin-bottom:8px;font-size:.9rem">
+      Every tweak, every approval, every piece of feedback shapes the next draft.
+      Your voice compounds — the AI doesn't just generate, it learns.
+    </p>
+
+    <div class="feedback-loop">
+      <div class="fb-node highlight">
+        <div class="fb-icon">⚡</div>
+        <div class="fb-label">AI generates draft</div>
+        <div class="fb-sub">Using current style guide + RAG over approved posts</div>
+      </div>
+      <div class="fb-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+      </div>
+      <div class="fb-node">
+        <div class="fb-icon">👀</div>
+        <div class="fb-label">You review</div>
+        <div class="fb-sub">Read the caption. Like it? Approve. Not quite? Tweak.</div>
+      </div>
+      <div class="fb-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+      </div>
+      <div class="fb-node">
+        <div class="fb-icon">👍</div>
+        <div class="fb-label">One-tap tweak or feedback</div>
+        <div class="fb-sub">"Shorter" · "More casual" · "Add a question" · Or type your own</div>
+      </div>
+      <div class="fb-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+      </div>
+      <div class="fb-node">
+        <div class="fb-icon">🧠</div>
+        <div class="fb-label">Style guide updated</div>
+        <div class="fb-sub">Your feedback writes a new rule. The guide grows with every post.</div>
+      </div>
+      <div class="fb-return">
+        ↻ Next draft uses the updated guide — and it's closer to what you want
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INTERACTIVE PROTOTYPE ============ -->
+<section class="proto-section" id="prototype">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-bottom:8px;text-align:center">Interactive prototype</p>
+    <h2 style="margin-bottom:8px;text-align:center">Try it yourself</h2>
+    <p style="color:var(--ink-muted);text-align:center;font-size:.9rem;margin-bottom:0">
+      This is a click-through of the web review app. Tap the buttons to experience Andrei's flow.
+    </p>
+
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="phone-status">
+          <span>9:41</span>
+          <span class="status-icons">📶 🔋</span>
+        </div>
+        <div class="phone-content">
+
+          <!-- Screen: Review -->
+          <div class="screen active" id="screen-review">
+            <div class="review-photo">
+              <!-- 3D-printed vase SVG illustration -->
+              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="vaseGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="var(--amber)" stop-opacity="0.3"/>
+                    <stop offset="50%" stop-color="var(--amber)" stop-opacity="0.6"/>
+                    <stop offset="100%" stop-color="var(--amber)" stop-opacity="0.3"/>
+                  </linearGradient>
+                </defs>
+                <!-- Vase shape -->
+                <path d="M70 30 Q75 30 75 40 L75 55 Q60 70 55 100 Q50 140 65 170 L135 170 Q150 140 145 100 Q140 70 125 55 L125 40 Q125 30 130 30 Z"
+                  fill="url(#vaseGrad)" stroke="var(--amber)" stroke-width="1.5"/>
+                <!-- Layer lines -->
+                <line x1="58" y1="80" x2="142" y2="80" stroke="var(--amber)" stroke-width="0.5" opacity="0.4"/>
+                <line x1="55" y1="95" x2="145" y2="95" stroke="var(--amber)" stroke-width="0.5" opacity="0.4"/>
+                <line x1="53" y1="110" x2="147" y2="110" stroke="var(--amber)" stroke-width="0.5" opacity="0.4"/>
+                <line x1="54" y1="125" x2="146" y2="125" stroke="var(--amber)" stroke-width="0.5" opacity="0.4"/>
+                <line x1="57" y1="140" x2="143" y2="140" stroke="var(--amber)" stroke-width="0.5" opacity="0.4"/>
+                <line x1="61" y1="155" x2="139" y2="155" stroke="var(--amber)" stroke-width="0.5" opacity="0.4"/>
+                <!-- Rim -->
+                <ellipse cx="100" cy="32" rx="30" ry="5" fill="none" stroke="var(--amber)" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <div class="review-body">
+              <div class="review-meta">
+                <span class="tag">3D PRINT</span>
+                <span class="time">just now</span>
+              </div>
+              <div class="review-caption" id="captionText">
+                Finished this vase this morning — 8 hours on the printer and totally worth it. The layer pattern came out cleaner than I expected. Thinking about making a set of three in different sizes. <span class="hashtag">#3Dprinting #maker #vase</span>
+              </div>
+              <div class="review-tweaks" id="tweakRow">
+                <button class="tweak-btn" data-tweak="shorter">↧ Shorter</button>
+                <button class="tweak-btn" data-tweak="longer">↥ Longer</button>
+                <button class="tweak-btn" data-tweak="casual">😎 Casual</button>
+                <button class="tweak-btn" data-tweak="cta">📣 Add CTA</button>
+                <button class="tweak-btn" data-tweak="emoji">✨ Emoji</button>
+                <button class="tweak-btn" data-tweak="question">❓ Question</button>
+              </div>
+            </div>
+            <div class="review-actions">
+              <button class="btn-primary" id="approveBtn">
+                ✓ Approve &amp; Post
+              </button>
+              <div class="btn-row">
+                <button class="btn-secondary" id="regenBtn">🔄 Regenerate</button>
+                <button class="btn-secondary" id="draftsBtn">📋 Drafts (2)</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Screen: Success -->
+          <div class="screen screen-success" id="screen-success">
+            <div class="check-circle">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 13l4 4L19 7"/>
+              </svg>
+            </div>
+            <h3>Posted to Instagram!</h3>
+            <p>Your photo and caption are now live. The approved post has been saved to your style library.</p>
+            <a href="#" class="ig-link" onclick="event.preventDefault();showScreen('review');resetCaption();">
+              📷 View on Instagram
+            </a>
+            <div style="width:100%;padding:0 20px">
+              <button class="btn-primary" onclick="showScreen('review');resetCaption();">
+                ← Back to review
+              </button>
+            </div>
+          </div>
+
+          <!-- Screen: Drafts -->
+          <div class="screen" id="screen-drafts">
+            <div class="drafts-header">
+              <h3>Drafts</h3>
+              <span class="count">3 drafts queued</span>
+            </div>
+            <div class="drafts-list">
+              <div class="draft-row" onclick="showScreen('review')">
+                <div class="draft-thumb">
+                  <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="14" fill="none" stroke="var(--amber)" stroke-width="1.5"/><circle cx="20" cy="20" r="8" fill="none" stroke="var(--amber)" stroke-width="1"/></svg>
+                </div>
+                <div class="draft-info">
+                  <div class="preview">Printing a custom phone stand for a friend. The overhangs are tricky but coming together nicely…</div>
+                  <div class="draft-time">12 min ago</div>
+                </div>
+                <span class="draft-badge">DRAFT</span>
+              </div>
+              <div class="draft-row" onclick="showScreen('review')">
+                <div class="draft-thumb">
+                  <svg viewBox="0 0 40 40"><rect x="10" y="8" width="20" height="24" rx="2" fill="none" stroke="var(--amber)" stroke-width="1.5"/><line x1="14" y1="14" x2="26" y2="14" stroke="var(--amber)" stroke-width="0.8"/><line x1="14" y1="20" x2="26" y2="20" stroke="var(--amber)" stroke-width="0.8"/><line x1="14" y1="26" x2="22" y2="26" stroke="var(--amber)" stroke-width="0.8"/></svg>
+                </div>
+                <div class="draft-info">
+                  <div class="preview">New filament arrived! Testing this silk copper PLA — the shine is unreal. Swipe to see the finish up close…</div>
+                  <div class="draft-time">1 hour ago</div>
+                </div>
+                <span class="draft-badge">DRAFT</span>
+              </div>
+              <div class="draft-row" onclick="showScreen('review')">
+                <div class="draft-thumb">
+                  <svg viewBox="0 0 40 40"><polygon points="20,6 30,14 30,28 20,34 10,28 10,14" fill="none" stroke="var(--amber)" stroke-width="1.5"/><circle cx="20" cy="20" r="4" fill="none" stroke="var(--amber)" stroke-width="1"/></svg>
+                </div>
+                <div class="draft-info">
+                  <div class="preview">Custom gear prototype for a client project. Iteration 4 — finally got the tolerance right on this one…</div>
+                  <div class="draft-time">3 hours ago</div>
+                </div>
+                <span class="draft-badge">DRAFT</span>
+              </div>
+            </div>
+            <div style="padding:12px 16px;border-top:1px solid var(--line)">
+              <button class="btn-secondary" style="width:100%" onclick="showScreen('review')">← Back to review</button>
+            </div>
+          </div>
+
+          <!-- Screen: Onboarding -->
+          <div class="screen screen-onboard" id="screen-onboard">
+            <div class="onboard-step-indicator" id="onboardDots">
+              <div class="dot active"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+            <div class="onboard-content" id="onboardContent">
+              <!-- Filled by JS -->
+            </div>
+            <div class="onboard-actions" id="onboardActions">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+
+        </div>
+        <div class="phone-tabbar">
+          <div class="phone-tab active" data-tab="review" onclick="showScreen('review')">
+            <span class="tab-icon">📋</span>
+            Review
+          </div>
+          <div class="phone-tab" data-tab="drafts" onclick="showScreen('drafts')">
+            <span class="tab-icon">🗂️</span>
+            Drafts
+          </div>
+          <div class="phone-tab" data-tab="setup" onclick="startOnboarding()">
+            <span class="tab-icon">⚙️</span>
+            Setup
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="proto-controls">
+      <button class="proto-ctrl active" onclick="showScreen('review');setActiveCtrl(this)">📋 Review</button>
+      <button class="proto-ctrl" onclick="showScreen('drafts');setActiveCtrl(this)">🗂️ Drafts</button>
+      <button class="proto-ctrl" onclick="startOnboarding();setActiveCtrl(this)">⚙️ Onboarding</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <p class="mono">Maker Post · Design overview for Andrei · Architecture E · V1–V6 slices ready</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   Theme toggle
+   ============================================================ */
+(function(){
+  var btn = document.getElementById('themeToggle');
+  var root = document.documentElement;
+  var stored = null;
+  try { stored = localStorage.getItem('mp-theme'); } catch(e){}
+  if(stored){ root.setAttribute('data-theme', stored); updateBtn(stored); }
+  function updateBtn(t){
+    btn.textContent = t === 'dark' ? '☀' : '☾';
+  }
+  btn.addEventListener('click', function(){
+    var isDark = root.getAttribute('data-theme') === 'dark'
+      || (!root.getAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
+    var next = isDark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('mp-theme', next); } catch(e){}
+    updateBtn(next);
+  });
+})();
+
+/* ============================================================
+   Screen switching
+   ============================================================ */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(function(s){
+    s.classList.remove('active');
+  });
+  var target = document.getElementById('screen-' + id);
+  if(target) target.classList.add('active');
+
+  // Update tab bar
+  document.querySelectorAll('.phone-tab').forEach(function(t){
+    t.classList.toggle('active', t.dataset.tab === id
+      || (id === 'review' && t.dataset.tab === 'review'));
+  });
+}
+
+function setActiveCtrl(btn){
+  document.querySelectorAll('.proto-ctrl').forEach(function(c){c.classList.remove('active')});
+  btn.classList.add('active');
+}
+
+/* ============================================================
+   Caption variations for one-tap tweaks
+   ============================================================ */
+var captions = {
+  default: 'Finished this vase this morning — 8 hours on the printer and totally worth it. The layer pattern came out cleaner than I expected. Thinking about making a set of three in different sizes. <span class="hashtag">#3Dprinting #maker #vase</span>',
+  shorter: '8 hours well spent. The layer pattern on this vase is *clean*. Thinking about a set of three. <span class="hashtag">#3Dprinting #maker</span>',
+  longer: 'Finished this vase this morning — 8 hours on the printer and totally worth every minute. The layer pattern came out cleaner than I expected, especially on the curved sections where I usually struggle with stringing. I tweaked the retraction distance and the temperature tower paid off. Thinking about making a set of three in different sizes — maybe a small, medium, and large to sell as a collection. What color should I try next? <span class="hashtag">#3Dprinting #maker #vase #3dprint #additivemanufacturing</span>',
+  casual: 'okay this vase turned out SO good 😅 8 hours on the printer but look at those layer lines tho. might make a whole set. <span class="hashtag">#3Dprinting #maker</span>',
+  cta: 'Finished this vase this morning — 8 hours on the printer and totally worth it. The layer pattern came out cleaner than I expected. Want one? DM me and I\'ll print you one in any color. <span class="hashtag">#3Dprinting #maker #vase</span>',
+  emoji: '✨ Finished this vase this morning — 8 hours on the printer and totally worth it 🙌 The layer pattern came out cleaner than I expected 😍 Thinking about making a set of three in different sizes 🏺 <span class="hashtag">#3Dprinting #maker #vase</span>',
+  question: 'Finished this vase this morning — 8 hours on the printer and totally worth it. The layer pattern came out cleaner than I expected. What would you print in this filament color? <span class="hashtag">#3Dprinting #maker #vase</span>'
+};
+
+var currentTweak = null;
+
+function resetCaption(){
+  currentTweak = null;
+  document.getElementById('captionText').innerHTML = captions.default;
+  document.querySelectorAll('.tweak-btn').forEach(function(b){b.classList.remove('applied')});
+}
+
+document.querySelectorAll('.tweak-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var tweak = btn.dataset.tweak;
+    var caption = document.getElementById('captionText');
+    caption.classList.add('regenerating');
+    setTimeout(function(){
+      caption.innerHTML = captions[tweak] || captions.default;
+      caption.classList.remove('regenerating');
+    }, 300);
+    // Mark applied
+    document.querySelectorAll('.tweak-btn').forEach(function(b){b.classList.remove('applied')});
+    btn.classList.add('applied');
+    currentTweak = tweak;
+  });
+});
+
+/* Approve & Post */
+document.getElementById('approveBtn').addEventListener('click', function(){
+  this.disabled = true;
+  this.textContent = 'Posting…';
+  var self = this;
+  setTimeout(function(){
+    showScreen('success');
+    self.disabled = false;
+    self.innerHTML = '✓ Approve &amp; Post';
+  }, 800);
+});
+
+/* Regenerate */
+document.getElementById('regenBtn').addEventListener('click', function(){
+  var caption = document.getElementById('captionText');
+  caption.classList.add('regenerating');
+  var alts = ['default','casual','question','cta','emoji'];
+  var pick = alts[Math.floor(Math.random()*alts.length)];
+  setTimeout(function(){
+    caption.innerHTML = captions[pick];
+    caption.classList.remove('regenerating');
+    document.querySelectorAll('.tweak-btn').forEach(function(b){b.classList.remove('applied')});
+  }, 600);
+});
+
+/* Drafts button */
+document.getElementById('draftsBtn').addEventListener('click', function(){
+  showScreen('drafts');
+  document.querySelectorAll('.proto-ctrl').forEach(function(c){c.classList.remove('active')});
+  document.querySelectorAll('.proto-ctrl')[1].classList.add('active');
+});
+
+/* ============================================================
+   Onboarding flow (3 steps)
+   ============================================================ */
+var onboardStep = 0;
+var onboardData = {
+  step0: {
+    title: 'Connect Instagram',
+    desc: 'Link your Instagram Creator or Business account so Maker Post can publish on your behalf.',
+    illust: '📷',
+    options: [
+      { label: 'Connect with Instagram', value: 'connect' },
+      { label: 'I\'ll do this later', value: 'later' }
+    ],
+    single: true
+  },
+  step1: {
+    title: 'Your style',
+    desc: 'A couple of questions to seed your style guide. This shapes every draft from day one.',
+    illust: '✍️',
+    options: [
+      { label: 'Casual & personal — like texting a friend', value: 'casual' },
+      { label: 'Professional — polished, informative', value: 'pro' },
+      { label: 'Playful & experimental — try things', value: 'playful' }
+    ],
+    single: true
+  },
+  step2: {
+    title: 'Install the Shortcut',
+    desc: 'Add the Maker Post shortcut to your iPhone\'s share sheet. Then you\'re ready — just share any photo.',
+    illust: '📎',
+    options: [
+      { label: 'Add Shortcut (opens iOS Shortcuts)', value: 'add' },
+      { label: 'Show me how it works first', value: 'demo' }
+    ],
+    single: true
+  }
+};
+
+var onboardSelections = [null, null, null];
+
+function startOnboarding(){
+  onboardStep = 0;
+  onboardSelections = [null, null, null];
+  showScreen('onboard');
+  renderOnboarding();
+}
+
+function renderOnboarding(){
+  var data = onboardData['step' + onboardStep];
+  var dots = document.getElementById('onboardDots');
+  dots.innerHTML = '';
+  for(var i = 0; i < 3; i++){
+    var dot = document.createElement('div');
+    dot.className = 'dot';
+    if(i < onboardStep) dot.classList.add('done');
+    else if(i === onboardStep) dot.classList.add('active');
+    dots.appendChild(dot);
+  }
+
+  var content = document.getElementById('onboardContent');
+  content.innerHTML = ''
+    + '<div class="onboard-illust">' + data.illust + '</div>'
+    + '<h3>' + data.title + '</h3>'
+    + '<p>' + data.desc + '</p>'
+    + '<div class="onboard-options" id="onboardOptions"></div>';
+
+  var optsContainer = document.getElementById('onboardOptions');
+  data.options.forEach(function(opt, idx){
+    var el = document.createElement('div');
+    el.className = 'onboard-option';
+    if(onboardSelections[onboardStep] === idx) el.classList.add('selected');
+    el.innerHTML = '<div class="opt-radio"></div><span>' + opt.label + '</span>';
+    el.addEventListener('click', function(){
+      onboardSelections[onboardStep] = idx;
+      document.querySelectorAll('.onboard-option').forEach(function(o){o.classList.remove('selected')});
+      el.classList.add('selected');
+      // Enable next button
+      var next = document.getElementById('onboardNext');
+      if(next) next.disabled = false;
+    });
+    optsContainer.appendChild(el);
+  });
+
+  var actions = document.getElementById('onboardActions');
+  var prevHtml = onboardStep > 0
+    ? '<button class="btn-secondary" style="flex:1" onclick="onboardPrev()">← Back</button>'
+    : '';
+  var isLast = onboardStep === 2;
+  var nextLabel = isLast ? '✓ Done' : 'Next →';
+  actions.innerHTML = prevHtml
+    + '<button class="btn-primary" id="onboardNext" style="flex:1" disabled>'
+    + nextLabel + '</button>';
+
+  document.getElementById('onboardNext').addEventListener('click', function(){
+    if(this.disabled) return;
+    if(isLast){
+      // Show review with a welcome state
+      showScreen('review');
+      document.querySelectorAll('.proto-ctrl').forEach(function(c){c.classList.remove('active')});
+      document.querySelectorAll('.proto-ctrl')[0].classList.add('active');
+    } else {
+      onboardStep++;
+      renderOnboarding();
+    }
+  });
+}
+
+function onboardPrev(){
+  if(onboardStep > 0){
+    onboardStep--;
+    renderOnboarding();
+  }
+}
+</script>
+</body>
+</html>
