@@ -1,0 +1,51 @@
+App Idea - Maker Post
+
+- name:  Maker Post
+- problem solves: my friend Andrei is working on his side-project as a solo-entrepreneur - custom , small-scale 3D printing services. He works full-time, so the time for his side-project is very limited.  He needs a tool to turn the rough photos on his phone into a social media posts that can be posted on autopilot daily or with a minimal supervision. The posts should help him build community around his services and passion , build followership, promote his his creations on instagram, make them engaging, stand out. He does not want to deal wit the complex setup,  heavyweight solutions, multiple integrations, steep learning curve. He does not want multi-step long actions required to post his works on Instagram. He wants minimal effort taking him from taken photo to engaging post on Instagram.  He also does not want posts to be primitive AI-generated slop which people immediately recognize as AI-generated and do not value much. He wants to it to reflect his vision, have his voice, be a part of himself.  Moreover, it should help him experiment, generate and explore new ideas, innovate. 
+- Goals, attributes 
+    - dead-simple: installation and  usage (my grandma could do it) with lowest possible friction and confusion
+    - ai-powered: generate accompanying text
+    - ai-powered: generate suggestions in user feedback pipeline . app generates post for instagram 
+        - ->  user approves or asks to rework it
+        - AI agent generates suggestions to gather user feedback(e.g. ‘content length: keep  the post content below 128 characters’
+        - -> user submits feedback (what they want to change, liked or did not liked or experiment ideas) 
+        - -> feedback pipeline analyses latest feedback and feedback from the past , defines new procedure, rules, instructions, etc,
+        - -> next run uses analysis and updated pipeline to. It allows user continuously shape, steer AI generated in content future runs as per their vision, preferences. User can still enter custom feedback at any time. AI-generated improvements suggestions make it really easy(1-action) to submit feedback, define various types of content style, language, format, length etc. Human Feedback compounds, 
+    - Lean, clean, minimal: not another monster that overloads user with menus, flows, settings. They can extend if they need more. Has everything you need, nothing you don’t. 
+    - Visual: whenever possible or reasonable present information in visual way rather that textual. 
+- Solution:
+- target audience: solo builders, small teams without dedicated marketing team
+- Features:  
+    - Direct post from built in Photos app: 
+        - take screenshot using native camera app 
+        - =>  select photo
+        - => share photo 
+        - => tap “direct post”
+        - => see your photo posted on instagram with auto generated text
+    - Reviewed  now post from built in Photos app: 
+        - take screenshot using native camera app 
+        - => select photo
+        - => tap share photo 
+        - => tap “reviewed  post”
+        - => tap the version of post that you liked (select from 2 options )
+        - => feedback pipeline captures signal from pairwise comparison automatically (user can review interpretation and reject if they want or skip review)
+        - => see your photo posted on instagram with auto generated text
+    - Bulk  reviewed post from built in Photos app: 
+        - Open native camera app 
+        - => select multiple photos
+        - => tap share 
+        - => tap “generate post drafts” 
+        - => choice 1: tap “close” when you want to review draft posts later , nothing gets posted , only drafts are generated and queued 
+        - => choice 2: tap “review drafts” when you want to review generated drafts now
+    - View the timeline: minimal info. Vertical timeline: weekly activity graph inspired by GutHub contribution graph. Plus followers count at the end of week. Noting else. 
+    - View timeline: detailed info that shows . Vertical timeline: daily activity graph inspired by GutHub . Line graph shows followers or likes count linked to each day. Filtering by tag shows only posts with this tag and the sum of followers count (delta) or likes count over selected timeframe. Selecting multiple tags will show multiple lanes and sums. Each User can create “lanes” using tags
+    - Auto-fetch mode:
+     - use rclone or rsync to get images, videos from iOS device then schedule pipeline with processing and posting workflow
+     - nice-to-have, later - consider using https://github.com/heygen-com/hyperframes for reels generation 
+    - User needs  
+      - low friction posting proces (e.g. only take a photo, the system does the rest to post, you only need to approve and one-tap share feedback on produced draft)
+      - effortlessly make instagram posts and reels (simple image or group of images)
+      - effortlessly make instagram posts and reels (single or group of images combined with video clips and assembled as engaging video with captions and cool video effects )
+      - low friction intelligent feedback for AI-powered video pipeline (what user wants the video to be like)
+      - low friction (for user) intelligent feedback (with compounding knowledge) and analysis from past pos/reels engagement for AI-powered video pipeline (what kined of post, reel produced more followers and likes) - use this knowledge to build high performing content in the future
+- tags: #app-idea 
