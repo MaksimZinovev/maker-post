@@ -4,7 +4,7 @@
 
 **Last Updated:** 2026-08-09
 **Session ID:** —
-**Active Feature:** Design revision — incorporate Andrei interview insights
+**Active Feature:** Shaping v2 complete — next: breadboard Shape D
 
 ## Status
 
@@ -21,21 +21,20 @@
 - [x] **Shaping v2 complete** (`docs/shaping.md`) — R0–R8, shapes A–D, fit check, Shape D selected (per shaping skill)
 - [x] **Ingest spike created** (`docs/spike-ingest.md`) — auto-sync feasibility investigation (per shaping skill spike format)
 - [x] **Mindmap updated** (`docs/mindmap.md`) — reflects v2 reframe
+- [x] **README updated** — reframe, Shape D architecture, file tree, deferred features
+- [x] **Shaping v2 reviewed and confirmed by user** ("looks good so far")
+- [x] **Committed and pushed** — `a812c26` on `main`
 
 ### What's In Progress
 
-- [ ] **Shaping review** — Shape D and revised docs presented to user for confirmation (HITL check-in)
-  - Details: Per user's "incremental — shaping first, then check in" instruction. Awaiting confirmation before proceeding to breadboard + slices.
-  - Blockers: none — awaiting user review
+Nothing — shaping phase complete, awaiting next session.
 
 ### What's Next
 
-1. **User reviews** shaping v2 (R0–R8, Shape D, fit check) → confirm or adjust
-2. **Breadboard Shape D** — detail into UI + Code affordances, wiring diagram (per breadboarding skill)
-3. **Re-slice** — vertical implementation slices from the breadboard (replaces v1 slices V1–V6)
-4. **Run ingest spike** (`docs/spike-ingest.md`) — investigate auto-sync feasibility in parallel with breadboarding
-5. **Update README.md** — reflect reframe, new architecture, deferred features
-6. Once breadboard + slices confirmed: begin implementation of revised Slice 1
+1. **Breadboard Shape D** — detail D2–D8 into UI + Code affordances, wiring diagram (per breadboarding skill)
+2. **Re-slice** — vertical implementation slices from the breadboard (replaces v1 slices V1–V6)
+3. **Run ingest spike** (`docs/spike-ingest.md`) — investigate auto-sync feasibility in parallel with breadboarding
+4. Once breadboard + slices confirmed: begin implementation of revised Slice 1
 
 ## Interview Insights → Shaping v2 Mapping
 
@@ -88,21 +87,21 @@
 - `docs/shaping.md` — rewritten (shaping v2: R0–R8, shapes A–D, fit check, Shape D, per shaping skill)
 - `docs/spike-ingest.md` — created (ingest feasibility spike, per shaping skill)
 - `docs/mindmap.md` — updated (reflects v2 reframe)
+- `README.md` — rewritten (reframe, Shape D, file tree, shorter)
 
 ## Evidence of Completion
 
-- [ ] Shaping v2 reviewed and confirmed by user (HITL check-in)
+- [x] Shaping v2 reviewed and confirmed by user ("looks good so far")
+- [x] README updated to reflect v2
 - [ ] Breadboard complete: Shape D detailed into affordances + wiring
 - [ ] Slices re-defined: vertical implementation slices from breadboard
-- [ ] README updated to reflect v2
 - [ ] No code verification applicable (design phase)
 
 ## Notes for Next Session
 
-1. **Shaping v2 is ready for user review.** The key decision point: confirm Shape D (hybrid — pipeline constant, ingest as spike). See `docs/shaping.md` fit check.
-2. After confirmation: **breadboard Shape D** using the breadboarding skill — detail D2–D8 into UI + Code affordances with wiring. This replaces the v1 breadboard in `docs/slices.md`.
+1. **Shaping v2 confirmed by user.** Shape D (hybrid — pipeline constant, ingest as spike) is the selected direction.
+2. **Breadboard Shape D** using the breadboarding skill — detail D2–D8 into UI + Code affordances with wiring. This replaces the v1 breadboard in `docs/slices.md`.
 3. **Run the ingest spike** (`docs/spike-ingest.md`) in parallel — it can happen alongside breadboarding since the pipeline doesn't depend on the ingest mechanism.
 4. **Re-slice** the breadboard into vertical implementation slices (max 9). Each slice must be demo-able (visible UI). The v1 slices (V1–V6) are superseded.
-5. **Update README.md** after breadboarding + slicing — reflect the reframe, new architecture, deferred features.
-6. The reframe in one sentence: **from "AI caption generator" → "AI organizational assistant for makers."** AI classifies, groups, surfaces post ideas, stores reference knowledge. Andrei writes captions and creates videos himself.
-7. Watch the D1 spike result — it determines whether MVP achieves R0/R4 (auto-sync) or falls back to D1-B (manual share).
+5. The reframe in one sentence: **from "AI caption generator" → "AI organizational assistant for makers."** AI classifies, groups, surfaces post ideas, stores reference knowledge. Andrei writes captions and creates videos himself.
+6. Watch the D1 spike result — it determines whether MVP achieves R0/R4 (auto-sync) or falls back to D1-B (manual share).
