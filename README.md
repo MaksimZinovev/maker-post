@@ -1,5 +1,7 @@
 # Maker Post
 
+![app](assets/app-mockup.png)
+
 > AI organizational assistant for solo makers — take a photo, everything else happens by itself.
 
 Auto-classifies photos by project, surfaces post ideas when enough content accumulates, and stores experiment results as a reference library. Designed for Andrei, a part-time 3D-printing entrepreneur juggling 5–7 projects in parallel who loses "brain fuel" to organization, not creation.
